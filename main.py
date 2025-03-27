@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from action.base_action import DataPipeline
+from log import logging
 
 app = FastAPI()
 
@@ -15,6 +16,7 @@ async def results(query: str):
     Returns:
         str: The result of processing the query.
     """
+    logging.info('Search Started')
     base = DataPipeline(query)
     result = await base.process()
 
