@@ -2,7 +2,7 @@ from abc import ABC
 import requests
 from config import url, headers
 
-from log import logging
+from log import logger
 
 FUNCTION_MAPPING = {}  # Dictionary to store the mapping of tool names to their classes.
 
@@ -65,7 +65,7 @@ class PriceAction(BaseAction):
             list: A list of links related to the query.
             dict: If an exception occurs, returns a dictionary with the exception.
         """
-        logging.info('Google search for results')
+        logger.info('Google search for results')
         querystring = {"query": user_query, "limit": "2", "related_keywords": "false"}
         try:
             response = requests.get(url, headers=headers, params=querystring)
@@ -78,5 +78,5 @@ class PriceAction(BaseAction):
 
                 return links_of_result
         except Exception as e:
-            logging.exception('Exception Raise during initial google api calling')
+            logger.exception('Exception Raise during initial google api calling')
             raise RuntimeError("Failed to fetch results from Google API") from e

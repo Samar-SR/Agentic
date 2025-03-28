@@ -1,8 +1,5 @@
 import logging
 
-# Configure logging globally
-logging.basicConfig()
-
 # Create a named logger
-logger = logging.getLogger("Agent")
+logger = logging.getLogger("uvicorn")
 logger.setLevel(logging.DEBUG)  # Ensure it captures all logs

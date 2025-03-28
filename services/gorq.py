@@ -6,7 +6,7 @@ from tools.tool_action import FUNCTION_MAPPING
 from typing import List
 # from openai import OpenAI
 import re
-from log import logging
+from log import logger
 
 # Model Name
 model = 'deepseek-r1-distill-llama-70b'
@@ -67,7 +67,7 @@ class GroqAction():
                 Returns:
                     str: The summarized content.
         """
-        logging.info('Summarizing API calling')
+        logger.info('Summarizing API calling')
         result = summary_client.chat.completions.create(
             model=model,
             messages=[
@@ -95,7 +95,7 @@ class GroqAction():
         Returns:
             str: The cleaned data.
         """
-        logging.info('Data Cleaning')
+        logger.info('Data Cleaning')
         pattern = rf"<{tag}>.*?</{tag}>"
         data = re.sub(pattern, "", data, flags=re.DOTALL)
 
@@ -116,7 +116,7 @@ class GroqAction():
         results = []
         for i in tool_list:
             # Retrieve the class associated with the tool name from the FUNCTION_MAPPING
-            logging.info('Tool mapping')
+            logger.info('Tool mapping')
             cls = FUNCTION_MAPPING[i.function.name]
             # Process the user query using the tool's process method
             output = await cls.process(self.user_query)
@@ -135,19 +135,19 @@ class GroqAction():
             str: The final output, either from the Groq API directly or from tool processing.
         """
         try:
-            logging.info('Gorq process started, initial Gorq Api calling for deciding normal response or tool')
+            logger.info('Gorq process started, initial Gorq Api calling for deciding normal response or tool')
             result = await self.__groq_api()
             # Check if the Groq API response includes tool calls
             if result.choices[0].message.tool_calls:
-                logging.info('Tool calling')
+                logger.info('Tool calling')
                 # Process the tool calls and get the summarized output
                 output = await self.__tool_result(result.choices[0].message.tool_calls)
             else:
-                logging.info('Output of direct result from base gorq AI')
+                logger.info('Output of direct result from base gorq AI')
                 # If no tool calls, use the content directly from the Groq API response
                 output = result.choices[0].message.content
             return {'result': output}
 
         except Exception as e:
-            logging.exception('Exception Raise during final result')
+            logger.exception('Exception Raise during final result')
             return {'exception': e}

@@ -1,4 +1,4 @@
-from log import logging
+from log import logger
 from services.gorq import GroqAction
 
 
@@ -10,7 +10,7 @@ class DataPipeline:
 
     async def process(self) -> dict:
         # Service to process user query
-        logging.info('Calling Gorq Action')
+        logger.info('Calling Gorq Action')
         result = GroqAction(self.user_query)
         output = await result.gorq_process()
 
